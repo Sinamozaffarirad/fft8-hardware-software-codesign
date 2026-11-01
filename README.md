@@ -55,6 +55,6 @@ Each program also accepts sixteen numeric command-line values: real and imaginar
 
 ## Notes on provenance and scope
 
-This is a student submission for a Hardware-Software Co-Design course. The source files in `src/` and `benchmark/` are the complete final source set selected from the original project folders, preserved without changes to their algorithmic implementation. Repository metadata, build configuration, and this documentation were added solely to make the work reproducible and suitable for public review.
+This is a course project for Hardware-Software Co-Design. The source files in `src/` and `benchmark/` are the complete final source set selected from the original project folders, preserved without changes to their algorithmic implementation. Repository metadata, build configuration, and this documentation were added solely to make the work reproducible and suitable for public review.
 
 The repository intentionally excludes generated executables, IDE settings, build directories, duplicate intermediate versions, and archive files. Those artifacts do not improve code review or reproducibility because the project can be rebuilt from the included source.
