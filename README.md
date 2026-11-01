@@ -1,55 +1,39 @@
-# FFT8 Hardware-Software Co-Design
+# FFT8 Scheduling for Hardware-Software Co-Design
 
-Course project exploring scheduling choices for an 8-point radix-2 Fast Fourier Transform (FFT). The project expresses the transform as a small streaming pipeline and implements three execution approaches around the same computational stages.
+An 8-point radix-2 Fast Fourier Transform (FFT) implemented in C++ for a Hardware-Software Co-Design course project. The work compares a direct static schedule with FIFO-based dynamic scheduling in single-threaded and multi-threaded forms.
 
-## Abstract
+![FFT8 dataflow architecture](assets/fft8-pipeline.svg)
 
-This project studies how a fixed signal-processing workload can be mapped to different scheduling models without changing the underlying FFT computation. An 8-point complex FFT is partitioned into reorder, FFT2, FFT4, and FFT8-plus-magnitude stages. The stages are evaluated as a direct static schedule, a FIFO-driven dynamic schedule in one thread, and a FIFO-driven multi-threaded schedule coordinated in round-robin order. The result is a compact codebase for examining the relationship between dataflow decomposition, scheduling policy, and software execution structure in a hardware-software co-design context.
+## Architecture
 
-![FFT8 dataflow pipeline](assets/fft8-pipeline.svg)
+The transform is decomposed into four dataflow stages:
 
-## Project focus
+1. Bit-reversal reordering of the input sequence
+2. FFT2 butterfly stage
+3. FFT4 butterfly stage
+4. FFT8 combination and magnitude calculation
 
-The implementation models the FFT as a sequence of actors connected by FIFO channels:
+Complex samples are represented with `std::complex<double>`. In the dynamic implementations, FIFO channels connect the stages and control when an actor may execute.
 
-1. bit-reversal reordering;
-2. radix-2 butterfly stage;
-3. radix-4 butterfly stage; and
-4. final radix-8 combination with magnitude calculation.
+## Implementations
 
-The repository compares three scheduling strategies:
-
-| Implementation | Approach |
+| Program | Scheduling model |
 | --- | --- |
-| `static_scheduler` | Direct, statically ordered execution of the FFT stages. |
-| `dynamic_single_thread` | FIFO-driven actor scheduling in one thread. |
-| `dynamic_multi_thread` | FIFO-driven actors coordinated across threads with round-robin scheduling. |
+| `static_scheduler` | Fixed execution order with the FFT stages evaluated directly. |
+| `dynamic_single_thread` | FIFO-driven actor execution in one thread. |
+| `dynamic_multi_thread` | One actor per thread, coordinated with a condition variable and round-robin scheduling. |
 
-The `benchmark/` directory contains the original benchmarking implementations and a process-level benchmark driver for comparing the executable variants. Benchmark configuration and resource requirements are intentionally left as supplied by the student project; no benchmark result is claimed in this repository unless it is reproduced in the target environment.
+The `benchmark/` directory contains the supplied benchmark variants for the three scheduling models, together with an executable-level benchmark driver.
 
-## Design details
+## Verification
 
-### Data representation and transform stages
-
-Each input sample is represented as `std::complex<double>`. The pipeline first applies the 3-bit reversal order required by the iterative radix-2 FFT, then performs the butterfly operations needed to form 2-point and 4-point sub-transforms. The final stage applies the FFT8 twiddle factors, produces the complex frequency-domain output, and prints the magnitude of every bin.
-
-### Scheduling variants
-
-The static implementation expresses the stage order directly in one program flow. The dynamic single-thread implementation represents stages as actors that fire when enough data is available in their input FIFO. The dynamic multi-thread implementation assigns one actor to each thread and coordinates execution with a condition variable and round-robin turn-taking. Keeping the transform stages aligned across these versions makes the scheduler the central point of comparison.
-
-### Benchmark sources
-
-The repository retains the benchmark programs from the final project version. They generate or accept multiple FFT8 input sets and report elapsed execution time for their respective implementation. Some benchmark configurations are intentionally large and should be reviewed for memory and runtime suitability before execution on a given machine.
-
-## Sample result
-
-All three implementations use the following default input when no command-line values are supplied:
+The supplied executables were run with the default input:
 
 ```text
 [1 + j0, 1 + j0, 1 + j0, 1 + j0, 0 + j0, 0 + j0, 0 + j0, 0 + j0]
 ```
 
-The supplied executables from the final project version were run with this default input. All three completed successfully with exit code `0` and produced the same FFT values shown below. The values are presented to six decimal places; insignificant differences in the final digits are expected from floating-point arithmetic.
+All three implementations completed with exit code `0` and produced the same output.
 
 ```text
 Bin    Complex output                    Magnitude
@@ -63,37 +47,16 @@ X[6]   0.000000 + j0.000000              0.000000
 X[7]   1.000000 + j2.414214              2.613126
 ```
 
-| Executable | Result |
-| --- | --- |
-| `static_scheduler.exe` | Completed successfully; output matches the table. |
-| `dynamic_single_thread.exe` | Completed successfully; output matches the table. |
-| `dynamic_multi_thread.exe` | Completed successfully; output matches the table. |
+The table is a functional correctness check; it is not a performance result.
 
-This is a functional output check, not a performance measurement. Timing results depend on compiler, operating system, hardware, and the selected benchmark configuration.
+## Build and run
 
-## Repository layout
-
-```text
-src/
-  static_scheduler.cpp          Static FFT8 schedule
-  dynamic_single_thread.cpp     Dynamic single-thread scheduler
-  dynamic_multi_thread.cpp      Dynamic multi-thread scheduler
-benchmark/
-  Benchmark_*.cpp               Per-strategy benchmark implementations
-  fft_benchmark.cpp             Executable-level benchmark driver
-CMakeLists.txt                  CMake build definition
-```
-
-## Build
-
-Requirements: a C++17 compiler and CMake 3.16 or newer.
+Requirements: CMake 3.16+ and a C++17 compiler.
 
 ```powershell
 cmake -S . -B build
 cmake --build build --config Release
 ```
-
-Run any of the three FFT implementations without arguments to use the included sample input:
 
 ```powershell
 .\build\Release\static_scheduler.exe
@@ -101,10 +64,12 @@ Run any of the three FFT implementations without arguments to use the included s
 .\build\Release\dynamic_multi_thread.exe
 ```
 
-Each program also accepts sixteen numeric command-line values: real and imaginary components for eight complex input samples, in order.
+Each executable accepts 16 numeric arguments: the real and imaginary components of eight complex input samples.
 
-## Notes on provenance and scope
+## Repository layout
 
-This is a course project for Hardware-Software Co-Design. The source files in `src/` and `benchmark/` are the complete final source set selected from the original project folders, preserved without changes to their algorithmic implementation. Repository metadata, build configuration, and this documentation were added solely to make the work reproducible and suitable for public review.
-
-The repository intentionally excludes generated executables, IDE settings, build directories, duplicate intermediate versions, and archive files. Those artifacts do not improve code review or reproducibility because the project can be rebuilt from the included source.
+```text
+src/        FFT8 implementations
+benchmark/  Benchmark implementations and driver
+assets/     Architecture diagram
+```
