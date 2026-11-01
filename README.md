@@ -41,6 +41,30 @@ The static implementation expresses the stage order directly in one program flow
 
 The repository retains the benchmark programs from the final project version. They generate or accept multiple FFT8 input sets and report elapsed execution time for their respective implementation. Some benchmark configurations are intentionally large and should be reviewed for memory and runtime suitability before execution on a given machine.
 
+## Sample result
+
+All three implementations use the following default input when no command-line values are supplied:
+
+```text
+[1 + j0, 1 + j0, 1 + j0, 1 + j0, 0 + j0, 0 + j0, 0 + j0, 0 + j0]
+```
+
+The reference FFT result below is rounded to six decimal places. It provides a quick correctness check after building and running an implementation; insignificant differences in the last digits are expected from floating-point arithmetic.
+
+```text
+Bin    Complex output                    Magnitude
+X[0]   4.000000 + j0.000000              4.000000
+X[1]   1.000000 - j2.414214              2.613126
+X[2]   0.000000 + j0.000000              0.000000
+X[3]   1.000000 - j0.414214              1.082392
+X[4]   0.000000 + j0.000000              0.000000
+X[5]   1.000000 + j0.414214              1.082392
+X[6]   0.000000 + j0.000000              0.000000
+X[7]   1.000000 + j2.414214              2.613126
+```
+
+This is a functional output check, not a performance measurement. Timing results depend on compiler, operating system, hardware, and the selected benchmark configuration.
+
 ## Repository layout
 
 ```text
