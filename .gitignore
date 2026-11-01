@@ -1,0 +1,24 @@
+# Build products
+/build/
+/output/
+/bin/
+*.exe
+*.obj
+*.pdb
+*.ilk
+
+# CMake
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+
+# IDE and editor files
+/.vscode/
+/.vs/
+*.user
+*.suo
+
+# Archives and benchmark output
+*.zip
+*.log

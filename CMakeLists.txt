@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(fft8_hardware_software_codesign LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(static_scheduler src/static_scheduler.cpp)
+add_executable(dynamic_single_thread src/dynamic_single_thread.cpp)
+add_executable(dynamic_multi_thread src/dynamic_multi_thread.cpp)
+
+find_package(Threads REQUIRED)
+target_link_libraries(dynamic_multi_thread PRIVATE Threads::Threads)
+
+add_executable(benchmark_static_scheduler benchmark/Benchmark_static_scheduler.cpp)
+add_executable(benchmark_dynamic_single_thread benchmark/Benchmark_dynamic_single_thread.cpp)
+add_executable(benchmark_dynamic_multi_thread benchmark/Benchmark_dynamic_multi_thread.cpp)
+target_link_libraries(benchmark_dynamic_multi_thread PRIVATE Threads::Threads)
+
+add_executable(fft_benchmark benchmark/fft_benchmark.cpp)
+target_link_libraries(fft_benchmark PRIVATE Threads::Threads)
