@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="310" viewBox="0 0 1200 310" role="img" aria-labelledby="title desc">
+  <title id="title">FFT8 streaming actor pipeline</title>
+  <desc id="desc">Eight complex inputs pass through bit reversal, radix-2 and radix-4 butterfly stages, then a final radix-8 combination and magnitude calculation.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="stage" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="310" rx="20" fill="url(#background)"/>
+  <text x="600" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#f8fafc">FFT8 Dataflow Architecture</text>
+  <text x="600" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#cbd5e1">The same actor pipeline is evaluated under static, dynamic single-thread, and dynamic multi-thread schedules.</text>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="35" y="130" width="165" height="94" rx="13" fill="#334155" stroke="#64748b" stroke-width="2"/>
+    <text x="117" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#f8fafc">Complex Input</text>
+    <text x="117" y="193" text-anchor="middle" font-size="15" fill="#cbd5e1">8 samples</text>
+
+    <line x1="201" y1="177" x2="253" y2="177" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="260" y="130" width="170" height="94" rx="13" fill="url(#stage)"/>
+    <text x="345" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#f8fafc">Reorder</text>
+    <text x="345" y="193" text-anchor="middle" font-size="15" fill="#dbeafe">bit-reversal</text>
+
+    <line x1="431" y1="177" x2="483" y2="177" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="490" y="130" width="170" height="94" rx="13" fill="url(#stage)"/>
+    <text x="575" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#f8fafc">FFT2 Actor</text>
+    <text x="575" y="193" text-anchor="middle" font-size="15" fill="#dbeafe">butterfly stage</text>
+
+    <line x1="661" y1="177" x2="713" y2="177" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="720" y="130" width="170" height="94" rx="13" fill="url(#stage)"/>
+    <text x="805" y="166" text-anchor="middle" font-size="18" font-weight="700" fill="#f8fafc">FFT4 Actor</text>
+    <text x="805" y="193" text-anchor="middle" font-size="15" fill="#dbeafe">butterfly stage</text>
+
+    <line x1="891" y1="177" x2="943" y2="177" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+    <rect x="950" y="130" width="215" height="94" rx="13" fill="url(#stage)"/>
+    <text x="1057" y="159" text-anchor="middle" font-size="18" font-weight="700" fill="#f8fafc">FFT8 + Magnitude</text>
+    <text x="1057" y="188" text-anchor="middle" font-size="15" fill="#dbeafe">final combination</text>
+    <text x="1057" y="209" text-anchor="middle" font-size="15" fill="#dbeafe">and spectral magnitude</text>
+  </g>
+  <text x="600" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#94a3b8">FIFO channels preserve the stage boundaries used by the dynamic scheduling implementations.</text>
+</svg>

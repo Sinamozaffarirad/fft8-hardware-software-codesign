@@ -1,6 +1,12 @@
 # FFT8 Hardware-Software Co-Design
 
-Student course project exploring scheduling choices for an 8-point radix-2 Fast Fourier Transform (FFT). The project expresses the transform as a small streaming pipeline and implements three execution approaches around the same computational stages.
+Course project exploring scheduling choices for an 8-point radix-2 Fast Fourier Transform (FFT). The project expresses the transform as a small streaming pipeline and implements three execution approaches around the same computational stages.
+
+## Abstract
+
+This project studies how a fixed signal-processing workload can be mapped to different scheduling models without changing the underlying FFT computation. An 8-point complex FFT is partitioned into reorder, FFT2, FFT4, and FFT8-plus-magnitude stages. The stages are evaluated as a direct static schedule, a FIFO-driven dynamic schedule in one thread, and a FIFO-driven multi-threaded schedule coordinated in round-robin order. The result is a compact codebase for examining the relationship between dataflow decomposition, scheduling policy, and software execution structure in a hardware-software co-design context.
+
+![FFT8 dataflow pipeline](assets/fft8-pipeline.svg)
 
 ## Project focus
 
@@ -20,6 +26,20 @@ The repository compares three scheduling strategies:
 | `dynamic_multi_thread` | FIFO-driven actors coordinated across threads with round-robin scheduling. |
 
 The `benchmark/` directory contains the original benchmarking implementations and a process-level benchmark driver for comparing the executable variants. Benchmark configuration and resource requirements are intentionally left as supplied by the student project; no benchmark result is claimed in this repository unless it is reproduced in the target environment.
+
+## Design details
+
+### Data representation and transform stages
+
+Each input sample is represented as `std::complex<double>`. The pipeline first applies the 3-bit reversal order required by the iterative radix-2 FFT, then performs the butterfly operations needed to form 2-point and 4-point sub-transforms. The final stage applies the FFT8 twiddle factors, produces the complex frequency-domain output, and prints the magnitude of every bin.
+
+### Scheduling variants
+
+The static implementation expresses the stage order directly in one program flow. The dynamic single-thread implementation represents stages as actors that fire when enough data is available in their input FIFO. The dynamic multi-thread implementation assigns one actor to each thread and coordinates execution with a condition variable and round-robin turn-taking. Keeping the transform stages aligned across these versions makes the scheduler the central point of comparison.
+
+### Benchmark sources
+
+The repository retains the benchmark programs from the final project version. They generate or accept multiple FFT8 input sets and report elapsed execution time for their respective implementation. Some benchmark configurations are intentionally large and should be reviewed for memory and runtime suitability before execution on a given machine.
 
 ## Repository layout
 
