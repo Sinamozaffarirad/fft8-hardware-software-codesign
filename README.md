@@ -49,7 +49,7 @@ All three implementations use the following default input when no command-line v
 [1 + j0, 1 + j0, 1 + j0, 1 + j0, 0 + j0, 0 + j0, 0 + j0, 0 + j0]
 ```
 
-The reference FFT result below is rounded to six decimal places. It provides a quick correctness check after building and running an implementation; insignificant differences in the last digits are expected from floating-point arithmetic.
+The supplied executables from the final project version were run with this default input. All three completed successfully with exit code `0` and produced the same FFT values shown below. The values are presented to six decimal places; insignificant differences in the final digits are expected from floating-point arithmetic.
 
 ```text
 Bin    Complex output                    Magnitude
@@ -62,6 +62,12 @@ X[5]   1.000000 + j0.414214              1.082392
 X[6]   0.000000 + j0.000000              0.000000
 X[7]   1.000000 + j2.414214              2.613126
 ```
+
+| Executable | Result |
+| --- | --- |
+| `static_scheduler.exe` | Completed successfully; output matches the table. |
+| `dynamic_single_thread.exe` | Completed successfully; output matches the table. |
+| `dynamic_multi_thread.exe` | Completed successfully; output matches the table. |
 
 This is a functional output check, not a performance measurement. Timing results depend on compiler, operating system, hardware, and the selected benchmark configuration.
 
